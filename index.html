@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Natural Soundscape with Apocalypse</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background-color: #87CEEB; /* Sky blue background */
+        }
+        #controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enhanced Natural Soundscape with Apocalypse</h1>
+
+    <div id="controls">
+        <button onclick="startSoundscape()">Start</button>
+        <button onclick="triggerApocalypse()">Apocalypse</button>
+    </div>
+
+    <canvas id="natureCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let soundscapeActive = false;
+        let apocalypseTriggered = false;
+
+        const canvas = document.getElementById('natureCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Initialize positions and states for visual elements
+        let bird1 = { x: 100, y: 100, flap: 0, direction: 1 };
+        let bird2 = { x: 200, y: 150, flap: 0, direction: -1 };
+        let frog1 = { x: 300, y: 500, croak: 0 };
+        let frog2 = { x: 500, y: 520, croak: 0 };
+        let waterRipples = [];
+        let raindrops = [];
+        let windSway = 0;
+        let clouds = [{x: 100, y: 50}, {x: 400, y: 80}, {x: 700, y: 60}];
+        let onomatopoeia = [];
+
+        function startSoundscape() {
+            if (apocalypseTriggered) return; // Prevent starting if apocalypse is triggered
+            soundscapeActive = true;
+            playBirdChirp1();
+            playBirdChirp2();
+            playFrogCroak1();
+            playFrogCroak2();
+            playWaterDroplet1();
+            playWaterDroplet2();
+            playWaterDroplet3();
+            playWaterDroplet4();
+            playWind1();
+            playWind2();
+            animate();
+        }
+
+        function triggerApocalypse() {
+            apocalypseTriggered = true;
+            soundscapeActive = false;
+            triggerMeteors();
+        }
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Bird Chirp 1
+        function playBirdChirp1() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const modulator = audioContext.createOscillator();
+            const modGain = audioContext.createGain();
+            
+            const baseFrequency = 1500;
+            const frequencyVariation = randomInRange(-200, 200);
+            carrier.type = 'sine';
+            modulator.type = 'sine';
+            
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime); 
+            modulator.frequency.setValueAtTime(30, audioContext.currentTime); 
+            modGain.gain.setValueAtTime(200, audioContext.currentTime);
+
+            modulator.connect(modGain);
+            modGain.connect(carrier.frequency);
+            carrier.connect(audioContext.destination);
+
+            carrier.start();
+            modulator.start();
+            carrier.stop(audioContext.currentTime + 0.2);
+            modulator.stop(audioContext.currentTime + 0.2);
+
+            bird1.flap = 10; // Trigger bird movement
+            displayOnomatopoeia("Chirp!", bird1.x, bird1.y);
+
+            const nextPlayTime = randomInRange(1, 5);
+            setTimeout(playBirdChirp1, nextPlayTime * 1000);
+        }
+
+        // Bird Chirp 2
+        function playBirdChirp2() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const modulator = audioContext.createOscillator();
+            const modGain = audioContext.createGain();
+            
+            const baseFrequency = 1800;
+            const frequencyVariation = randomInRange(-200, 200);
+            carrier.type = 'sine';
+            modulator.type = 'sine';
+            
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime);
+            modulator.frequency.setValueAtTime(40, audioContext.currentTime); 
+            modGain.gain.setValueAtTime(150, audioContext.currentTime);
+
+            modulator.connect(modGain);
+            modGain.connect(carrier.frequency);
+            carrier.connect(audioContext.destination);
+
+            carrier.start();
+            modulator.start();
+            carrier.stop(audioContext.currentTime + 0.25);
+            modulator.stop(audioContext.currentTime + 0.25);
+
+            bird2.flap = 10; // Trigger bird movement
+            displayOnomatopoeia("Tweet!", bird2.x, bird2.y);
+
+            const nextPlayTime = randomInRange(1, 5);
+            setTimeout(playBirdChirp2, nextPlayTime * 1000);
+        }
+
+        // Frog Croak 1
+        function playFrogCroak1() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const modulator = audioContext.createOscillator();
+            const modGain = audioContext.createGain();
+            const gainNode = audioContext.createGain(); // Added gain node for volume control
+
+            const baseFrequency = 120;
+            const frequencyVariation = randomInRange(-10, 10);
+            carrier.type = 'square';
+            modulator.type = 'sine';
+            
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime); 
+            modulator.frequency.setValueAtTime(25, audioContext.currentTime); 
+            modGain.gain.setValueAtTime(100, audioContext.currentTime);
+
+            modulator.connect(modGain);
+            modGain.connect(carrier.frequency);
+            carrier.connect(gainNode);
+            gainNode.gain.value = 0.3; // Set frog croak volume
+            gainNode.connect(audioContext.destination);
+
+            carrier.start();
+            modulator.start();
+            carrier.stop(audioContext.currentTime + 0.5);
+            modulator.stop(audioContext.currentTime + 0.5);
+
+            frog1.croak = 5; // Trigger frog croak visual effect
+            frog1.x += randomInRange(-50, 50); // Randomly hop left or right
+            frog1.x = Math.max(0, Math.min(frog1.x, canvas.width - 30)); // Keep within canvas bounds
+            displayOnomatopoeia("Ribbit!", frog1.x, frog1.y);
+
+            const nextPlayTime = randomInRange(4, 10);
+            setTimeout(playFrogCroak1, nextPlayTime * 1000);
+        }
+
+        // Frog Croak 2
+        function playFrogCroak2() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const modulator = audioContext.createOscillator();
+            const modGain = audioContext.createGain();
+            const gainNode = audioContext.createGain(); // Added gain node for volume control
+
+            const baseFrequency = 130;
+            const frequencyVariation = randomInRange(-10, 10);
+            carrier.type = 'square';
+            modulator.type = 'sine';
+            
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime); 
+            modulator.frequency.setValueAtTime(30, audioContext.currentTime); 
+            modGain.gain.setValueAtTime(100, audioContext.currentTime);
+
+            modulator.connect(modGain);
+            modGain.connect(carrier.frequency);
+            carrier.connect(gainNode);
+            gainNode.gain.value = 0.3; // Set frog croak volume
+            gainNode.connect(audioContext.destination);
+
+            carrier.start();
+            modulator.start();
+            carrier.stop(audioContext.currentTime + 0.5);
+            modulator.stop(audioContext.currentTime + 0.5);
+
+            frog2.croak = 5; // Trigger frog croak visual effect
+            frog2.x += randomInRange(-50, 50); // Randomly hop left or right
+            frog2.x = Math.max(0, Math.min(frog2.x, canvas.width - 30)); // Keep within canvas bounds
+            displayOnomatopoeia("Croak!", frog2.x, frog2.y);
+
+            const nextPlayTime = randomInRange(4, 10);
+            setTimeout(playFrogCroak2, nextPlayTime * 1000);
+        }
+
+        // Water Droplet 1
+        function playWaterDroplet1() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const envelope = audioContext.createGain();
+            
+            const baseFrequency = 2000;
+            const frequencyVariation = randomInRange(-100, 100);
+            carrier.type = 'sine';
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime);
+
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.01);
+            envelope.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+
+            carrier.connect(envelope);
+            envelope.connect(audioContext.destination);
+
+            carrier.start();
+            carrier.stop(audioContext.currentTime + 0.3);
+
+            waterRipples.push({ x: randomInRange(300, 500), y: randomInRange(500, 550), radius: 0 }); // Trigger ripple
+            displayOnomatopoeia("Splash!", waterRipples[waterRipples.length - 1].x, waterRipples[waterRipples.length - 1].y);
+
+            const nextPlayTime = randomInRange(3, 7);
+            setTimeout(playWaterDroplet1, nextPlayTime * 1000);
+        }
+
+        // Water Droplet 2
+        function playWaterDroplet2() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const envelope = audioContext.createGain();
+            
+            const baseFrequency = 2500;
+            const frequencyVariation = randomInRange(-100, 100);
+            carrier.type = 'sine';
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime);
+
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.01);
+            envelope.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+
+            carrier.connect(envelope);
+            envelope.connect(audioContext.destination);
+
+            carrier.start();
+            carrier.stop(audioContext.currentTime + 0.2);
+
+            waterRipples.push({ x: randomInRange(300, 500), y: randomInRange(500, 550), radius: 0 }); // Trigger ripple
+            displayOnomatopoeia("Plop!", waterRipples[waterRipples.length - 1].x, waterRipples[waterRipples.length - 1].y);
+
+            const nextPlayTime = randomInRange(3, 7);
+            setTimeout(playWaterDroplet2, nextPlayTime * 1000);
+        }
+
+        // Water Droplet 3 (Lower Sound)
+        function playWaterDroplet3() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const envelope = audioContext.createGain();
+            
+            const baseFrequency = 1500;
+            const frequencyVariation = randomInRange(-50, 50);
+            carrier.type = 'sine';
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime);
+
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.01);
+            envelope.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
+
+            carrier.connect(envelope);
+            envelope.connect(audioContext.destination);
+
+            carrier.start();
+            carrier.stop(audioContext.currentTime + 0.4);
+
+            waterRipples.push({ x: randomInRange(300, 500), y: randomInRange(500, 550), radius: 0 }); // Trigger ripple
+            displayOnomatopoeia("Plunk!", waterRipples[waterRipples.length - 1].x, waterRipples[waterRipples.length - 1].y);
+
+            const nextPlayTime = randomInRange(4, 8);
+            setTimeout(playWaterDroplet3, nextPlayTime * 1000);
+        }
+
+        // Water Droplet 4 (Lower Sound)
+        function playWaterDroplet4() {
+            if (!soundscapeActive) return;
+
+            const carrier = audioContext.createOscillator();
+            const envelope = audioContext.createGain();
+            
+            const baseFrequency = 1700;
+            const frequencyVariation = randomInRange(-50, 50);
+            carrier.type = 'sine';
+            carrier.frequency.setValueAtTime(baseFrequency + frequencyVariation, audioContext.currentTime);
+
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1, audioContext.currentTime + 0.01);
+            envelope.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
+
+            carrier.connect(envelope);
+            envelope.connect(audioContext.destination);
+
+            carrier.start();
+            carrier.stop(audioContext.currentTime + 0.4);
+
+            waterRipples.push({ x: randomInRange(300, 500), y: randomInRange(500, 550), radius: 0 }); // Trigger ripple
+            displayOnomatopoeia("Droop!", waterRipples[waterRipples.length - 1].x, waterRipples[waterRipples.length - 1].y);
+
+            const nextPlayTime = randomInRange(4, 8);
+            setTimeout(playWaterDroplet4, nextPlayTime * 1000);
+        }
+
+        // Wind Simulation 1 (Longer and Louder)
+        function playWind1() {
+            if (!soundscapeActive) return;
+
+            const bufferSize = 2 * audioContext.sampleRate;
+            const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+
+            // Generate pink noise (simple approximation)
+            let b0, b1, b2, b3, b4, b5, b6;
+            b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+            for (let i = 0; i < bufferSize; i++) {
+                let white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.18; // (increase) compensate for gain
+                b6 = white * 0.115926;
+            }
+
+            const noise = audioContext.createBufferSource();
+            noise.buffer = noiseBuffer;
+
+            // Apply a low-pass filter to simulate wind
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(randomInRange(300, 700), audioContext.currentTime);
+
+            // Apply an envelope to shape the wind sound
+            const envelope = audioContext.createGain();
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1.2, audioContext.currentTime + 0.5);
+            envelope.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + randomInRange(10, 20));
+
+            noise.connect(filter);
+            filter.connect(envelope);
+            envelope.connect(audioContext.destination);
+
+            noise.start();
+            noise.stop(audioContext.currentTime + 20);
+
+            windSway = 10; // Trigger wind movement
+            displayOnomatopoeia("Whoosh!", randomInRange(100, 700), randomInRange(100, 200));
+
+            const nextPlayTime = randomInRange(10, 15);
+            setTimeout(playWind1, nextPlayTime * 1000);
+        }
+
+        // Wind Simulation 2 (Longer and Louder)
+        function playWind2() {
+            if (!soundscapeActive) return;
+
+            const bufferSize = 2 * audioContext.sampleRate;
+            const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+
+            // Generate pink noise (simple approximation)
+            let b0, b1, b2, b3, b4, b5, b6;
+            b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+            for (let i = 0; i < bufferSize; i++) {
+                let white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                output[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+                output[i] *= 0.18; // (increase) compensate for gain
+                b6 = white * 0.115926;
+            }
+
+            const noise = audioContext.createBufferSource();
+            noise.buffer = noiseBuffer;
+
+            // Apply a low-pass filter with a different frequency to simulate a different type of wind
+            const filter = audioContext.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(randomInRange(200, 500), audioContext.currentTime);
+
+            // Apply an envelope to shape the wind sound with a different character
+            const envelope = audioContext.createGain();
+            envelope.gain.setValueAtTime(0, audioContext.currentTime);
+            envelope.gain.linearRampToValueAtTime(1.2, audioContext.currentTime + 0.5);
+            envelope.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + randomInRange(10, 20));
+
+            noise.connect(filter);
+            filter.connect(envelope);
+            envelope.connect(audioContext.destination);
+
+            noise.start();
+            noise.stop(audioContext.currentTime + 20);
+
+            windSway = 15; // Trigger wind movement
+            displayOnomatopoeia("Whooosh!", randomInRange(100, 700), randomInRange(100, 200));
+
+            const nextPlayTime = randomInRange(10, 15);
+            setTimeout(playWind2, nextPlayTime * 1000);
+        }
+
+        function drawNatureScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the ground
+            ctx.fillStyle = "#228B22"; // Forest green
+            ctx.fillRect(0, 500, canvas.width, 100);
+
+            // Draw birds
+            drawBird(bird1);
+            drawBird(bird2);
+
+            // Draw frogs
+            drawFrog(frog1);
+            drawFrog(frog2);
+
+            // Draw water ripples
+            drawRipples();
+
+            // Draw raindrops
+            drawRaindrops();
+
+            // Draw trees/grass swaying in wind
+            drawWindEffect();
+
+            // Draw clouds
+            drawClouds();
+
+            // Draw onomatopoeic text
+            drawOnomatopoeia();
+        }
+
+        function drawBird(bird) {
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.moveTo(bird.x, bird.y);
+            ctx.lineTo(bird.x - 10, bird.y + 10 - bird.flap);
+            ctx.lineTo(bird.x + 10, bird.y + 10 - bird.flap);
+            ctx.closePath();
+            ctx.fill();
+            if (bird.flap > 0) bird.flap--; // Reduce flap effect
+
+            bird.x += bird.direction * 1; // Move bird horizontally
+            if (bird.x > canvas.width || bird.x < 0) bird.direction *= -1; // Change direction at edges
+        }
+
+        function drawFrog(frog) {
+            ctx.fillStyle = "green";
+            ctx.beginPath();
+            ctx.arc(frog.x, frog.y, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(frog.x - 5, frog.y - 5, 3, 0, Math.PI * 2);
+            ctx.arc(frog.x + 5, frog.y - 5, 3, 0, Math.PI * 2);
+            ctx.fill();
+            if (frog.croak > 0) {
+                ctx.strokeStyle = "darkgreen";
+                ctx.beginPath();
+                ctx.arc(frog.x, frog.y, 20 + frog.croak, 0, Math.PI * 2);
+                ctx.stroke();
+                frog.croak--;
+            }
+        }
+
+        function drawRipples() {
+            ctx.strokeStyle = "blue";
+            for (let i = 0; i < waterRipples.length; i++) {
+                let ripple = waterRipples[i];
+                ctx.beginPath();
+                ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ripple.radius += 1;
+                if (ripple.radius > 30) waterRipples.splice(i, 1); // Remove ripple after it expands
+            }
+        }
+
+        function drawRaindrops() {
+            ctx.fillStyle = "blue";
+            for (let i = 0; i < raindrops.length; i++) {
+                let drop = raindrops[i];
+                ctx.beginPath();
+                ctx.arc(drop.x, drop.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+                drop.y += 5; // Make the drop fall
+
+                if (drop.y > 500) { // If it reaches the ground
+                    waterRipples.push({ x: drop.x, y: 500, radius: 0 }); // Create ripple
+                    raindrops.splice(i, 1); // Remove the drop
+                }
+            }
+
+            if (Math.random() < 0.1) { // Random chance to add a new drop
+                raindrops.push({ x: randomInRange(0, canvas.width), y: 0 });
+            }
+        }
+
+        function drawWindEffect() {
+            ctx.fillStyle = "#2E8B57"; // Sea green for trees/grass
+            ctx.beginPath();
+            ctx.moveTo(50, 500);
+            ctx.lineTo(100 + windSway, 450);
+            ctx.lineTo(150, 500);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(200, 500);
+            ctx.lineTo(250 + windSway, 450);
+            ctx.lineTo(300, 500);
+            ctx.fill();
+            if (windSway > 0) windSway--; // Reduce sway effect
+        }
+
+        function drawClouds() {
+            ctx.fillStyle = "#FFFFFF"; // White clouds
+            for (let i = 0; i < clouds.length; i++) {
+                let cloud = clouds[i];
+                ctx.beginPath();
+                ctx.arc(cloud.x, cloud.y, 20, 0, Math.PI * 2);
+                ctx.arc(cloud.x + 30, cloud.y, 25, 0, Math.PI * 2);
+                ctx.arc(cloud.x + 60, cloud.y, 20, 0, Math.PI * 2);
+                ctx.fill();
+                cloud.x -= 0.5; // Move cloud slowly to the left
+
+                if (cloud.x < -60) { // Reset cloud to right side when it exits
+                    cloud.x = canvas.width + 60;
+                }
+            }
+        }
+
+        function displayOnomatopoeia(text, x, y) {
+            onomatopoeia.push({ text, x, y, opacity: 1 });
+        }
+
+        function drawOnomatopoeia() {
+            ctx.font = "20px Comic Sans MS";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            for (let i = 0; i < onomatopoeia.length; i++) {
+                let item = onomatopoeia[i];
+                ctx.fillStyle = `rgba(0, 0, 0, ${item.opacity})`;
+                ctx.fillText(item.text, item.x, item.y);
+                item.opacity -= 0.02;
+                if (item.opacity <= 0) {
+                    onomatopoeia.splice(i, 1); // Remove after it fades out
+                }
+            }
+        }
+
+        function triggerMeteors() {
+            const meteorCount = 10;
+            const meteors = [];
+
+            for (let i = 0; i < meteorCount; i++) {
+                meteors.push({
+                    x: randomInRange(0, canvas.width),
+                    y: -50,
+                    speedX: randomInRange(-3, 3),
+                    speedY: randomInRange(3, 6),
+                });
+            }
+
+            const explosionSound = audioContext.createOscillator();
+            const explosionGain = audioContext.createGain();
+            explosionSound.type = "triangle";
+            explosionSound.frequency.setValueAtTime(50, audioContext.currentTime);
+            explosionGain.gain.setValueAtTime(1, audioContext.currentTime);
+            explosionGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+            explosionSound.connect(explosionGain);
+            explosionGain.connect(audioContext.destination);
+            explosionSound.start();
+            explosionSound.stop(audioContext.currentTime + 0.5);
+
+            function animateMeteors() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawNatureScene(); // Still draw the background, but stop other animations
+
+                for (let i = 0; i < meteors.length; i++) {
+                    let meteor = meteors[i];
+                    meteor.x += meteor.speedX;
+                    meteor.y += meteor.speedY;
+
+                    ctx.fillStyle = "orange";
+                    ctx.beginPath();
+                    ctx.arc(meteor.x, meteor.y, 10, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    if (meteor.y > canvas.height) {
+                        meteors.splice(i, 1); // Remove meteor once it hits the ground
+                    }
+                }
+
+                if (meteors.length > 0) {
+                    requestAnimationFrame(animateMeteors);
+                } else {
+                    apocalypseTriggered = false; // Reset apocalypse state
+                }
+            }
+
+            animateMeteors();
+        }
+
+        function animate() {
+            if (soundscapeActive) {
+                drawNatureScene();
+                requestAnimationFrame(animate);
+            }
+        }
+    </script>
+</body>
+</html>
